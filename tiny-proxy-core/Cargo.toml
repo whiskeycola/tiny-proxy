@@ -1,0 +1,13 @@
+[package]
+name = "tiny-proxy-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+base64 = "0.22.1"
+httparse = "1.9.5"
+thiserror = "1.0.64"
+tokio = { workspace = true, features = ["io-util", "net", "time"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["full"] }

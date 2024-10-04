@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["tiny-proxy", "tiny-proxy-core"]
+
+[workspace.dependencies]
+tiny-proxy-core = { path = "tiny-proxy-core" }
+tokio = { version = "1.40.0" }
