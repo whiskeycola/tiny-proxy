@@ -6,7 +6,7 @@ use std::{
 use httparse::Header;
 use tokio::{
     io::{copy_bidirectional, AsyncRead, AsyncWrite, AsyncWriteExt},
-    net::{TcpSocket, ToSocketAddrs},
+    net::TcpSocket,
 };
 use tokio::{net::lookup_host, time::timeout};
 pub mod error;
@@ -51,15 +51,6 @@ impl Proxy {
         self
     }
 
-    pub async fn listen<A: ToSocketAddrs>(&self, addr: A) -> Result<()> {
-        let listener = tokio::net::TcpListener::bind(addr).await?;
-        loop {
-            let (socket, _) = listener.accept().await.unwrap();
-
-            let p = self.clone();
-            tokio::spawn(async move { p.run(socket).await });
-        }
-    }
     pub async fn run<RW: AsyncRead + AsyncWrite + std::marker::Unpin>(
         &self,
         mut stream: RW,
