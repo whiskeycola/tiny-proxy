@@ -37,13 +37,13 @@ impl Proxy {
         self
     }
 
-    pub fn set_bind_ipv4(mut self, addr: Ipv4Addr) -> Self {
-        self.bind_ipv4 = Some(addr);
+    pub fn set_bind_ipv4(mut self, addr: impl Into<Option<Ipv4Addr>>) -> Self {
+        self.bind_ipv4 = addr.into();
         self
     }
 
-    pub fn set_bind_ipv6(mut self, addr: Ipv6Addr) -> Self {
-        self.bind_ipv6 = Some(addr);
+    pub fn set_bind_ipv6(mut self, addr: impl Into<Option<Ipv6Addr>>) -> Self {
+        self.bind_ipv6 = addr.into();
         self
     }
     pub fn set_nodelay(mut self, nodelay: bool) -> Self {
