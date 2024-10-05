@@ -182,7 +182,7 @@ impl Proxy {
         }
 
         if let Some(ipv6) = self.bind_ipv6 {
-            for con_addr in addr_ipv6 {
+            for con_addr in addr_ipv6.clone() {
                 let saddr = SocketAddrV6::new(ipv6, 0, 0, 0);
                 let socket = TcpSocket::new_v6()?;
                 socket.bind(SocketAddr::V6(saddr))?;
@@ -205,12 +205,20 @@ impl Proxy {
             }
         }
 
-        for con_addr in addr_ipv4.clone() {
-            let socket = TcpSocket::new_v4()?;
-            if let Ok(stream) = socket.connect(con_addr).await {
-                return Ok(stream);
+        // bind auto
+        if self.bind_ipv6.is_none() && self.bind_ipv4.is_none() {
+            for con_addr in addr_ipv4.into_iter().chain(addr_ipv6.into_iter()) {
+                let socket = match &con_addr {
+                    SocketAddr::V4(_) => TcpSocket::new_v4(),
+                    SocketAddr::V6(_) => TcpSocket::new_v6(),
+                }?;
+
+                if let Ok(stream) = socket.connect(con_addr).await {
+                    return Ok(stream);
+                }
             }
         }
+
         Err(Error::DistConnect)
     }
 
